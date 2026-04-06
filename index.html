@@ -1,159 +1,726 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的台南小旅行</title>
-    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海邊走走 🏖️ 恆春三天兩夜放鬆之旅</title>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sand: '#FDFBF7',
+                        ocean: '#4A90E2',
+                        sunset: '#F5A623',
+                        stone: '#4A4A4A',
+                        danger: '#D0021B',
+                        success: '#7ED321'
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        /* Chart Container Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Timeline styling without SVG */
+        .timeline-item::before {
+            content: '📍';
+            position: absolute;
+            left: -13px;
+            top: 0;
+            background-color: white;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
         body {
-            background-color: #FFF9F2;
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            color: #4A4A4A;
-            padding-bottom: 50px;
-        }
-        .hand-drawn-border {
-            border: 2px solid #4A4A4A;
-            border-radius: 15px 50px 15px 25px / 25px 15px 50px 15px;
-            box-shadow: 4px 4px 0px #D8C3A5;
-            background: #FFFFFF;
-        }
-        .title-font { font-family: 'ZCOOL+KuaiLe', cursive; }
-        .tag { border-radius: 20px; padding: 2px 10px; font-size: 0.8rem; font-weight: bold; }
-        .tag-food { background: #FFD1D1; color: #D32F2F; } /* 必吃 */
-        .tag-spot { background: #D1E9FF; color: #1976D2; } /* 攻略 */
-        .tag-note { background: #E1FFD1; color: #388E3C; } /* 預約 */
-        .nav-btn {
-            background: #4A4A4A;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
+            background-color: #FDFBF7; /* sand */
+            color: #4A4A4A; /* stone */
         }
     </style>
 </head>
-<body class="p-4">
+<body class="font-sans antialiased leading-relaxed">
 
-    <header class="mb-6 text-center">
-        <h1 class="text-3xl title-font font-bold mb-2">🏮 台南慢旅時光 🏮</h1>
-        <p class="text-gray-500 text-sm italic">Hsinchu to Tainan Trip</p>
+    <!-- Chosen Palette: Warm Neutrals (Sand background), Ocean Blue for primary actions, Sunset Orange for highlights, Stone for text. -->
+    <!-- Application Structure Plan: 
+         1. Sticky Navigation: Quick access to sections.
+         2. Hero Section: Basic trip info.
+         3. Overview & Budget (Chart): Detailed budget breakdown and visual doughnut chart.
+         4. Accommodation & Transport: Key info about the B&B and distances to attractions.
+         5. Interactive Timeline (The Core): Daily breakdown with explicit rest stops (Guanmiao), time management (ATV), parking info, and Google Maps links.
+         6. Aquarium Guide: Custom map and filterable schedule to optimize the visit.
+         7. Food Map: Filterable grid based on B&B owner's local recommendations.
+         8. Crisis Management: Quick reference for emergencies. -->
+    <!-- Visualization & Content Choices: 
+         - Doughnut Chart (Chart.js): Budget breakdown -> Goal: Show cost distribution -> Justification: Easy to read proportions -> Library: Chart.js (NO SVG).
+         - Timeline: CSS/HTML structured list -> Goal: Show chronological itinerary -> Justification: Best for sequential travel plans -> Library: Vanilla HTML/Tailwind (NO SVG/Mermaid).
+         - Filterable Grids: For Food options & Aquarium schedule -> Goal: Organize options -> Justification: Allows quick choice -> Library: Vanilla JS (NO SVG). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 top-0">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center font-bold text-xl text-ocean">
+                    🏖️ 海邊走走 Trip
+                </div>
+                <div class="hidden sm:flex space-x-6 text-sm font-medium text-stone">
+                    <a href="#overview" class="hover:text-ocean transition">總覽與預算</a>
+                    <a href="#accommodation" class="hover:text-ocean transition">交通住宿</a>
+                    <a href="#timeline" class="hover:text-ocean transition">每日行程</a>
+                    <a href="#aquarium" class="hover:text-ocean transition">海生館攻略</a>
+                    <a href="#food" class="hover:text-ocean transition">美食地圖</a>
+                    <a href="#crisis" class="text-danger font-bold hover:text-red-700 transition">⚠️ 危機處理</a>
+                </div>
+                <!-- Mobile Menu Button (Unicode icon) -->
+                <div class="sm:hidden text-2xl cursor-pointer" id="mobile-menu-btn">☰</div>
+            </div>
+        </div>
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t border-gray-100 pb-4 px-4 space-y-3 shadow-lg absolute w-full z-40">
+            <a href="#overview" class="block pt-3 text-stone font-medium">總覽與預算</a>
+            <a href="#accommodation" class="block text-stone font-medium">交通住宿</a>
+            <a href="#timeline" class="block text-stone font-medium">每日行程</a>
+            <a href="#aquarium" class="block text-stone font-medium">海生館攻略</a>
+            <a href="#food" class="block text-stone font-medium">美食地圖</a>
+            <a href="#crisis" class="block text-danger font-bold">⚠️ 危機處理</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-24 pb-12 bg-gradient-to-b from-[#e0f2fe] to-sand">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-stone mb-4">恆春放鬆放空行 🌊</h1>
+            <p class="text-lg text-gray-600 mb-6">出發日期：2025/05/01 - 05/03 ｜ 成員：2位大人</p>
+            <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm text-sm border border-gray-200">
+                <span>🚗 雲林出發</span> ➡️ <span>🏨 海邊走走旅居</span>
+            </div>
+        </div>
     </header>
 
-    <section class="mb-10">
-        <div class="flex justify-between items-end mb-4">
-            <h2 class="text-2xl title-font font-bold text-orange-600">Day 1 - 2/27</h2>
-            <div class="text-sm text-right bg-blue-50 p-2 rounded-lg border border-blue-200">
-                🌤️ 台南：22°C - 26°C<br>晴時多雲，適合步行
-            </div>
-        </div>
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-blue-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🚉 11:00 集合啟程</span>
-            </div>
-            <p class="text-gray-600 mt-1">地點：台南火車站</p>
-            <div class="mt-3">
-                <a href="https://www.google.com/maps/search/?api=1&query=台南火車站" class="nav-btn">📍 導航前往</a>
-            </div>
-        </div>
-
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-red-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🍴 午餐：站前美食</span>
-                <span class="tag tag-food">必吃美食</span>
-            </div>
-            <p class="text-sm mt-2">推薦：北門路或民權路一帶。<br><b>攻略：</b>如果想吃台南味，推薦民權路的「無名米糕」或北門路「三好一公道當歸鴨」。</p>
-        </div>
-
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-green-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🏨 13:00 寄放行李</span>
-            </div>
-            <p class="text-gray-600 mt-1">地點：Ciao 潮文旅</p>
-            <div class="mt-2 text-sm text-orange-600 font-bold">⚠️ 重要預約代號：請查收信箱確認碼</div>
-            <div class="mt-3">
-                <a href="https://www.google.com/maps/search/?api=1&query=Ciao+潮文旅" class="nav-btn">📍 導航飯店</a>
-            </div>
-        </div>
-
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-yellow-400">
-            <div class="flex justify-between items-center">
-                <span class="font-bold text-lg">📸 中西區文藝散策</span>
-                <span class="tag tag-spot">必買伴手禮</span>
-            </div>
-            <p class="text-sm mt-2">
-                • 台南美術館2館 (純白建築超好拍)<br>
-                • 司法博物館、孔廟商圈<br>
-                <b>攻略：</b>孔廟商圈推薦買「莿桐花」或「保哥黑輪」。
+        <!-- Section 1: Overview & Stats -->
+        <section id="overview" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold border-b-2 border-ocean pb-2 mb-6 inline-block">行前總覽與預算估計</h2>
+            <p class="mb-6 text-gray-700 leading-relaxed">
+                本次旅程主打「動靜皆宜、步調悠閒」。自行開車提供最大的彈性，方便在沿途停靠休息，且前往沙灘車地點或海生館等較分散的景點時更為便利。以下為這趟旅程的預估花費。
             </p>
-            <div class="mt-3 space-x-2">
-                <a href="https://www.google.com/maps/search/?api=1&query=台南市美術館2館" class="nav-btn">📍 導航美術館</a>
+            
+            <!-- 預估花費區塊 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-xl font-bold text-stone mb-4 border-b pb-2">💰 預估總花費 (2位大人)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>🏨 住宿費用 (兩晚)</span>
+                                <span class="font-bold">$8,400</span>
+                            </li>
+                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">已付 $4,200 / <span class="text-danger font-bold">尾款 $4,200 (現場付)</span></li>
+                            
+                            <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>🚗 交通費用 (油錢+過路費)</span>
+                                <span class="font-bold">~$1,500</span>
+                            </li>
+                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">預估里程 450km，油資約 $1,200 + 國道過路費約 $300</li>
+                            
+                            <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>🍽️ 餐飲費用 (3天2夜)</span>
+                                <span class="font-bold">~$4,000</span>
+                            </li>
+                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">依預算：正餐 $200-500/人，小吃 $100-200/人</li>
+                            
+                            <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>🎟️ 門票與活動</span>
+                                <span class="font-bold">~$2,100</span>
+                            </li>
+                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">海生館 $450x2 + 沙灘車預估 $1,200/台(兩人共乘)</li>
+                        </ul>
+                        <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center text-lg">
+                            <span class="font-bold text-ocean">總計預估</span>
+                            <span class="font-bold text-danger">~$16,000</span>
+                        </div>
+                        <div class="text-sm text-red-500 text-right mt-1 font-bold">註：扣除已付住宿，這趟旅程您大約需準備 ~$11,800 的現金/信用卡預算。</div>
+                    </div>
+                    <!-- Chart container for budget -->
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-purple-400 bg-indigo-50">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🌙 18:00 燈火神農與夜市</span>
-            </div>
-            <p class="text-sm mt-2 italic">「神農街晚上很有氣氛，適合拍照，文創小店多。」</p>
-            <p class="text-sm mt-2"><span class="tag tag-food">大東夜市必點</span>：二師兄滷味、延記臭豆腐。</p>
-            <div class="mt-3">
-                <a href="https://www.google.com/maps/search/?api=1&query=神農街" class="nav-btn">📍 導航神農街</a>
-            </div>
-        </div>
-    </section>
+        <!-- Section 1.5: Accommodation & Transportation Info -->
+        <section id="accommodation" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold border-b-2 border-ocean pb-2 mb-6 inline-block">🏠 住宿與周邊交通資訊</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 住宿卡片 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden h-full flex flex-col">
+                    <div class="absolute top-0 right-0 bg-ocean text-white px-3 py-1 rounded-bl-lg font-bold text-sm">已預訂</div>
+                    <h3 class="text-xl font-bold text-stone mb-2">海邊走走旅居 (萬里桐)</h3>
+                    <p class="text-gray-600 text-sm mb-4">位於萬里桐海岸旁，風景優美，老闆非常熱情，並提供許多在地私房名單。</p>
+                    
+                    <ul class="space-y-3 text-sm text-gray-700 mb-6 flex-grow">
+                        <li class="flex items-start gap-2">
+                            <span class="text-lg leading-none">📍</span> 
+                            <span>屏東縣恆春鎮萬里路 (萬里桐)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-lg leading-none">⏰</span> 
+                            <span><strong>入住 (Check-in)：</strong> 下午 16:00 後<br>
+                            <strong>退房 (Check-out)：</strong> 中午 12:00 前</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-lg leading-none">🅿️</span> 
+                            <span><strong>停車資訊：</strong> 抵達前可先致電老闆確認專屬停車位或建議臨停區。</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/search/?api=1&query=恆春萬里桐海邊走走旅居" target="_blank" class="block text-center w-full bg-blue-50 text-ocean border border-blue-200 px-4 py-2 rounded-lg hover:bg-ocean hover:text-white transition font-bold mt-auto">
+                        🔗 點此開啟 Google 導航前往民宿
+                    </a>
+                </div>
 
-    <section>
-        <div class="flex justify-between items-end mb-4">
-            <h2 class="text-2xl title-font font-bold text-orange-600">Day 2 - 2/28</h2>
-            <div class="text-sm text-right bg-blue-50 p-2 rounded-lg border border-blue-200">
-                ☀️ 台南：23°C - 28°C<br>紫外線強，建議防曬
+                <!-- 周邊景點距離卡片 -->
+                <div class="bg-sand border border-orange-200 p-6 rounded-xl shadow-sm h-full">
+                    <h3 class="text-lg font-bold text-stone mb-4 border-b border-orange-200 pb-2">🚗 以民宿為中心的車程估算</h3>
+                    <p class="text-sm text-gray-600 mb-4">萬里桐位於恆春半島西側，前往主要景點的預估開車時間如下，方便駕駛隨時對相對距離與位置有概念：</p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
+                            <span class="font-bold text-stone">🐟 屏東海生館</span>
+                            <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 8-10 分鐘</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
+                            <span class="font-bold text-stone">🍜 恆春鎮中心 (覓食)</span>
+                            <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 12-15 分鐘</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
+                            <span class="font-bold text-stone">🦀 後壁湖 / 星砂灣</span>
+                            <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 15-20 分鐘</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
+                            <span class="font-bold text-stone">🏎️ 沙灘車活動區 (南灣/恆春)</span>
+                            <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 15-20 分鐘</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
+                            <span class="font-bold text-stone">🌭 墾丁大街夜市</span>
+                            <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 20-25 分鐘</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-blue-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🚕 10:00 前往十鼓</span>
-            </div>
-            <p class="text-sm mt-1 text-gray-600">車程約 20 分鐘。門口有行李寄放櫃。</p>
-        </div>
+        <!-- Section 2: Daily Itinerary Timeline -->
+        <section id="timeline" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold border-b-2 border-ocean pb-2 mb-8 inline-block">漫遊時間軸</h2>
+            
+            <!-- Day 1 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 1：5/1 (四) 啟程與海洋巡禮</h3>
+                <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
+                    
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">08:00</span>
+                        <h4 class="text-lg font-bold mt-2">出發：雲林 7-11 快來門市</h4>
+                        <p class="text-gray-600 text-sm mt-1">🚗 自駕前往屏東。預計行車時間 2.5 小時，請準備好車上音樂！</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=雲林縣7-11快來門市" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-yellow-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🥁 十鼓文創冒險</span>
-                <span class="tag tag-note">預約提醒</span>
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-sunset bg-orange-100 px-2 py-1 rounded">09:30 (停留 30min)</span>
+                        <h4 class="text-lg font-bold mt-2">中途休息：國道3號 關廟服務區</h4>
+                        <p class="text-gray-600 text-sm mt-1">💡 駕駛休息點。從雲林出發到這邊約一個半小時，在此下車上廁所、活動筋骨，補充水分後再繼續南下。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：服務區內設有廣大免費停車場。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=國道3號關廟服務區" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:00 (停留 1hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午餐：在地推薦小吃</h4>
+                        <p class="text-gray-600 text-sm mt-1">進入海生館前，先到鎮上享用老闆心中的Top 1麵店「秋香麵店」，或是去吃「鴨香飯」（老闆推：鴨肉飯+荷包蛋，便宜大碗），快速吃飽好上路。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=恆春鎮公有停車場" target="_blank" class="text-ocean hover:underline">恆春鎮公有停車場</a>，再步行前往即可。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">13:30 (停留 2.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">靜態活動：國立海洋生物博物館</h4>
+                        <p class="text-gray-600 text-sm mt-1">🐟 避開正中午烈日，在室內舒適觀賞海洋生態。建議必看小白鯨與海底隧道。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=屏東海生館停車場" target="_blank" class="text-ocean hover:underline">海生館園區專屬付費停車場</a>（車位充足）。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=屏東海生館" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">16:30</span>
+                        <h4 class="text-lg font-bold mt-2">Check-in：海邊走走旅居</h4>
+                        <p class="text-gray-600 text-sm mt-1">🏨 抵達民宿，卸下行李，稍作休息換裝。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：請於抵達前先向民宿確認專屬停車位，或依民宿指示停放周邊白線區域。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=恆春海邊走走旅居" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">18:00</span>
+                        <h4 class="text-lg font-bold mt-2">晚餐：恆春大快朵頤</h4>
+                        <p class="text-gray-600 text-sm mt-1">首推老闆私藏的「北門家常菜」，必點超級下飯的恆春最好吃豬腳！若是想吃麵食宵夜類，推薦「古城擔仔麵」<span class="bg-red-100 text-red-600 px-1 rounded text-xs font-bold">🎁 報海邊走走送小菜</span>，便宜又好吃。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：北門家常菜附近路邊可臨停；古城擔仔麵建議停<a href="https://www.google.com/maps/search/?api=1&query=恆春鎮公有停車場" target="_blank" class="text-ocean hover:underline">恆春鎮公有停車場</a>。</p>
+                    </div>
+                </div>
             </div>
-            <p class="text-sm mt-2">
-                <b>11:00 必看表演：</b>百年糖廠擊鼓表演。<br>
-                <b>挑戰攻略：</b><br>
-                1. 煙囪滑梯 (必玩極限)<br>
-                2. 飛天宅急便 (滑索)<br>
-                3. <b>天堂路：</b>俯瞰奇美博物館全景最佳位置。
+
+            <!-- Day 2 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 2：5/2 (五) 自然探索與越野刺激</h3>
+                <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
+                    
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">09:00</span>
+                        <h4 class="text-lg font-bold mt-2">起床與慵懶早餐</h4>
+                        <p class="text-gray-600 text-sm mt-1">睡到自然醒。可享用民宿早餐或至鎮上吃在地早餐。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：若前往鎮上，一樣建議停放恆春鎮公有停車場。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">10:30 (停留 1.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">晨間散步：星砂灣 / 後壁湖漁港</h4>
+                        <p class="text-gray-600 text-sm mt-1">🚶‍♂️ 趁早上陽光還沒那麼毒辣，去星砂灣拍拍照、走走燈塔旁的小徑，享受自然海景。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=後壁湖遊艇碼頭停車場" target="_blank" class="text-ocean hover:underline">後壁湖遊艇碼頭周邊免費停車場</a>，再步行前往星砂灣。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=墾丁星砂灣" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:30 (停留 1.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午餐：紅柴坑漁文海產</h4>
+                        <p class="text-gray-600 text-sm mt-1">🦀 捨棄觀光客眾多的後壁湖，改去離民宿只要5分鐘車程的「漁文海產店」。海鮮價格合理，兩個人也非常好點菜，老闆真心推薦！</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：餐廳附設停車位或<a href="https://www.google.com/maps/search/?api=1&query=紅柴坑漁港" target="_blank" class="text-ocean hover:underline">紅柴坑漁港</a>周邊臨停。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-sunset bg-orange-100 px-2 py-1 rounded">14:30 (停留 1.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午休或咖啡廳避暑</h4>
+                        <p class="text-gray-600 text-sm mt-1">💡 5月午後氣溫極高，不建議此時戶外活動。可回民宿休息，或去「肥春閣」喝杯飲料吹冷氣。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：若是去獨立咖啡廳，通常備有小型停車場或可白線臨停。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">16:30 (活動 1-1.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">重點活動：沙灘車越野體驗 🏎️</h4>
+                        <div class="bg-blue-50 border border-blue-200 p-3 rounded mt-2 text-sm text-gray-700">
+                            <strong>天氣與時間判斷：</strong> 5月份下午4點半後陽光較柔和，且有機會在沙灘或高處看夕陽，是最適合玩沙灘車的時間。請穿著不怕髒的衣物，並戴上太陽眼鏡防沙。若當日遇到雷陣雨，請依據<a href="#crisis" class="text-danger underline">危機處理</a>聯絡店家改期。
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 font-bold">🅿️ 停車建議：請直接將車輛停放在預約的「沙灘車業者」所提供的專屬停車場或集合點腹地。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=墾丁沙灘車" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 搜尋周邊沙灘車</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">19:00</span>
+                        <h4 class="text-lg font-bold mt-2">晚餐：泰式庭園或在地老店</h4>
+                        <p class="text-gray-600 text-sm mt-1">玩完沙灘車肚子一定餓了！推薦去「象廚泰式料理」吃全恆春最厚的月亮蝦餅，好停車又美味。若想吃點小吃，老字號「鄉村冬粉鴨」的滷味(推豬氣管)也是絕佳選擇。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：象廚有廣大專屬停車場；吃冬粉鴨請停<a href="https://www.google.com/maps/search/?api=1&query=恆春鎮公有停車場" target="_blank" class="text-ocean hover:underline">恆春鎮公有停車場</a>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 3：5/3 (六) 賦歸與藝文散策</h3>
+                <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
+                    
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:00</span>
+                        <h4 class="text-lg font-bold mt-2">Check-out：離開民宿</h4>
+                        <p class="text-gray-600 text-sm mt-1">早上可悠閒整理行李，或在附近買杯咖啡再出發。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:15 (停留 1hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午餐：悠閒簡餐與消暑甜點</h4>
+                        <p class="text-gray-600 text-sm mt-1">退房後推薦到「快樂鳥」享受好吃的海鮮披薩與漂亮裝潢 <span class="bg-red-100 text-red-600 px-1 rounded text-xs font-bold">🎁 報海邊走走有招待</span>，或是到「一杯咖啡」品嚐美味的家常菜簡餐。飯後別忘了來碗「柯記綠豆饌」。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：快樂鳥周邊白線好臨停；一杯咖啡附近需找路邊停車格。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-sunset bg-orange-100 px-2 py-1 rounded">13:30</span>
+                        <h4 class="text-lg font-bold mt-2">驅車北上：前往高雄</h4>
+                        <p class="text-gray-600 text-sm mt-1">🚗 預計車程約 2 小時。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">15:30 (停留 2hr)</span>
+                        <h4 class="text-lg font-bold mt-2">順遊景點：高雄駁二藝術特區</h4>
+                        <p class="text-gray-600 text-sm mt-1">🎨 走走路、看展覽、吹海風，作為旅程結束前的美好句點。周邊有許多文創商店可逛。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=駁二大義倉庫停車場" target="_blank" class="text-ocean hover:underline">大義倉庫群或蓬萊倉庫付費停車場</a>，假日車位較滿可能需排隊稍候。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=高雄駁二藝術特區" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">17:30</span>
+                        <h4 class="text-lg font-bold mt-2">返回雲林</h4>
+                        <p class="text-gray-600 text-sm mt-1">🚗 預計車程約 1.5 - 2 小時，平安抵達 7-11 快來門市。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2.5: Aquarium Guide -->
+        <section id="aquarium" class="scroll-mt-20">
+            <div class="flex justify-between items-end border-b-2 border-ocean pb-2 mb-6">
+                <h2 class="text-2xl font-bold inline-block">🐟 海生館高效攻略</h2>
+            </div>
+            <p class="mb-6 text-gray-700 leading-relaxed">
+                預計於 Day 1 下午 13:30 - 16:00 停留。館區廣大，為了節省腳力與體力，請參考下方的概念地圖動線，並根據時間鎖定必看的餵食秀！
             </p>
-            <div class="mt-3">
-                <a href="https://www.google.com/maps/search/?api=1&query=十鼓文創園區" class="nav-btn">📍 導航園區</a>
+
+            <!-- 概念地圖與動線 -->
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-8">
+                <h3 class="font-bold text-lg text-ocean mb-4">🗺️ 展館分布與建議動線 (入口進入後)</h3>
+                
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center relative">
+                    <!-- 珊瑚王國 -->
+                    <div class="w-full md:w-1/3 bg-white border-t-4 border-pink-400 p-4 rounded-lg shadow-sm text-center z-10">
+                        <div class="text-4xl mb-2">🪸</div>
+                        <h4 class="font-bold text-stone">珊瑚王國館</h4>
+                        <p class="text-xs text-gray-500 mt-1">海底隧道、白鯨池</p>
+                        <div class="mt-2 text-xs bg-pink-50 text-pink-700 py-1 rounded font-bold">📍 入口左手邊</div>
+                    </div>
+
+                    <div class="hidden md:block text-2xl text-gray-400">➡️</div>
+                    <div class="md:hidden text-2xl text-gray-400">⬇️</div>
+
+                    <!-- 台灣水域 -->
+                    <div class="w-full md:w-1/3 bg-white border-t-4 border-blue-400 p-4 rounded-lg shadow-sm text-center z-10">
+                        <div class="text-4xl mb-2">🇹🇼</div>
+                        <h4 class="font-bold text-stone">台灣水域館</h4>
+                        <p class="text-xs text-gray-500 mt-1">大洋池、觸摸池</p>
+                        <div class="mt-2 text-xs bg-blue-50 text-blue-700 py-1 rounded font-bold">📍 入口右手邊</div>
+                    </div>
+
+                    <div class="hidden md:block text-2xl text-gray-400">➡️</div>
+                    <div class="md:hidden text-2xl text-gray-400">⬇️</div>
+
+                    <!-- 世界水域 -->
+                    <div class="w-full md:w-1/3 bg-white border-t-4 border-teal-400 p-4 rounded-lg shadow-sm text-center z-10">
+                        <div class="text-4xl mb-2">🐧</div>
+                        <h4 class="font-bold text-stone">世界水域館</h4>
+                        <p class="text-xs text-gray-500 mt-1">企鵝館、巨型海藻森林</p>
+                        <div class="mt-2 text-xs bg-teal-50 text-teal-700 py-1 rounded font-bold">📍 需出主館往後棟走</div>
+                    </div>
+                </div>
+                
+                <p class="mt-4 text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
+                    💡 <strong>嚮導建議走法：</strong> 13:30 抵達後，先直奔後棟的<strong>【世界水域館】</strong>看 14:00 的海藻森林秀，接著 15:00 看企鵝。之後慢慢走回主館逛<strong>【珊瑚王國】</strong>與<strong>【台灣水域】</strong>，避開剛入園的人潮。
+                </p>
             </div>
-        </div>
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-red-400">
-            <div class="flex justify-between">
-                <span class="font-bold text-lg">🍴 園區用餐</span>
+            <!-- 互動式節目表 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-lg text-stone mb-4 border-b pb-2">⏰ 下午時段節目表 (13:00 以後)</h3>
+                
+                <!-- 篩選器 -->
+                <div class="flex flex-wrap gap-2 mb-6" id="aqua-filters">
+                    <button class="aqua-btn active bg-ocean text-white px-4 py-1.5 rounded-full text-sm transition" data-pavilion="all">全部節目</button>
+                    <button class="aqua-btn bg-gray-100 text-stone px-4 py-1.5 rounded-full text-sm hover:bg-gray-200 transition" data-pavilion="pink">🪸 珊瑚王國</button>
+                    <button class="aqua-btn bg-gray-100 text-stone px-4 py-1.5 rounded-full text-sm hover:bg-gray-200 transition" data-pavilion="blue">🇹🇼 台灣水域</button>
+                    <button class="aqua-btn bg-gray-100 text-stone px-4 py-1.5 rounded-full text-sm hover:bg-gray-200 transition" data-pavilion="teal">🐧 世界水域</button>
+                </div>
+
+                <!-- 節目列表 -->
+                <div class="space-y-3" id="aqua-schedule-list">
+                    <!-- JS 生成內容 -->
+                </div>
             </div>
-            <p class="text-sm mt-2">推薦「修護棚餐廳」：工業風用餐體驗。</p>
-        </div>
+        </section>
 
-        <div class="hand-drawn-border p-4 mb-4 border-l-8 border-l-gray-400 bg-gray-50">
-            <span class="font-bold text-lg">🏠 15:00 賦歸</span>
-            <p class="text-sm mt-1">往台南火車站或高鐵站 (15min)。</p>
-        </div>
-    </section>
+        <!-- Section 3: Food Map (Interactive) -->
+        <section id="food" class="scroll-mt-20">
+            <div class="flex justify-between items-end border-b-2 border-ocean pb-2 mb-6">
+                <h2 class="text-2xl font-bold inline-block">🍽️ 民宿老闆口袋美食地圖</h2>
+            </div>
+            <div class="bg-yellow-50 border-l-4 border-sunset p-4 rounded-r-lg mb-6 shadow-sm">
+                <p class="text-gray-700 font-medium">
+                    💡 <strong>海邊走走旅居老闆私房推薦：</strong> 這裡收錄了在地人愛吃、價格合理且非觀光客網紅店的精選清單。看到標示 <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs font-bold">🎁 報名有招待</span> 的餐廳，結帳或點餐時記得說：「是萬里桐海邊走走旅居介紹的」喔！
+                </p>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 mb-6" id="food-filters">
+                <button class="filter-btn active bg-ocean text-white px-4 py-2 rounded-full text-sm transition" data-filter="all">全部</button>
+                <button class="filter-btn bg-white text-stone border border-gray-300 px-4 py-2 rounded-full text-sm hover:bg-gray-50 transition" data-filter="local_noodle">🍜 在地麵食/小吃</button>
+                <button class="filter-btn bg-white text-stone border border-gray-300 px-4 py-2 rounded-full text-sm hover:bg-gray-50 transition" data-filter="chinese_seafood">🥢 中式/海鮮熱炒</button>
+                <button class="filter-btn bg-white text-stone border border-gray-300 px-4 py-2 rounded-full text-sm hover:bg-gray-50 transition" data-filter="bistro_thai">🍛 簡餐/異國料理</button>
+                <button class="filter-btn bg-white text-stone border border-gray-300 px-4 py-2 rounded-full text-sm hover:bg-gray-50 transition" data-filter="dessert">🍧 甜點/中途休息</button>
+            </div>
 
-    <footer class="text-center text-gray-400 text-xs mt-10">
-        Handcrafted for your Tainan Trip ♡
+            <!-- Food Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="food-grid">
+                <!-- Content injected by JS -->
+            </div>
+        </section>
+
+        <!-- Section 4: Crisis Management -->
+        <section id="crisis" class="scroll-mt-20 bg-red-50 border-l-4 border-danger p-6 rounded-r-xl shadow-sm mb-12">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-3xl">🚨</span>
+                <h2 class="text-2xl font-bold text-danger">危機處理模式 (Crisis Mode)</h2>
+            </div>
+            <p class="text-gray-700 mb-4 font-medium">遇到突發狀況請保持冷靜，請參閱以下標準作業流程 (SOP)：</p>
+            
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h3 class="font-bold text-lg mb-2 text-stone">狀況一：交通中斷 / 塞車嚴重</h3>
+                    <ul class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
+                        <li><strong>第一步聯絡：</strong> 免聯絡，打開 Google Maps 查看即時路況，或收聽警廣。</li>
+                        <li><strong>備案選擇：</strong> 若國道3號塞車，可考慮改走<span class="bg-yellow-100 px-1">台1線 (省道)</span>或<span class="bg-yellow-100 px-1">台17線 (沿海公路)</span>。</li>
+                        <li><strong>行程調整：</strong> 若延誤過久，果斷取消當日後續不重要的行程，先確保安全抵達民宿。</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h3 class="font-bold text-lg mb-2 text-stone">狀況二：天候不佳 (豪大雨/颱風警報)</h3>
+                    <ul class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
+                        <li><strong>第一步聯絡：</strong> 
+                            1. 聯絡「沙灘車業者」確認是否取消或改期。<br>
+                            2. 聯絡「海邊走走旅居」確認是否可延期 (若發布陸警)。
+                        </li>
+                        <li><strong>保留證據：</strong> 截圖中央氣象署的警報畫面，作為退費或延期交涉的依據。</li>
+                        <li><strong>備案選擇：</strong> 啟動「全室內備案」。增加在海生館停留時間、改去屏東市區百貨、或在民宿內買零食看電影。絕對避免前往海邊或山區。</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h3 class="font-bold text-lg mb-2 text-stone">狀況三：車輛拋錨或事故</h3>
+                    <ul class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
+                        <li><strong>第一步聯絡：</strong> 
+                            1. 人員受傷撥 119、報警撥 110。<br>
+                            2. 聯絡您的「汽車保險公司」請求道路救援。
+                        </li>
+                        <li><strong>保留證據：</strong> 放置三角牌後，在安全處拍照錄影現場狀況、保留報案三聯單、拖吊收據。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone text-white text-center py-6 mt-12">
+        <p class="text-sm">為您專屬規劃的旅遊小工具 🏖️ 祝您旅途愉快、平安順心。</p>
     </footer>
 
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+        // Close menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => menu.classList.add('hidden'));
+        });
+
+        // --- Budget Chart Logic ---
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['住宿 ($8,400)', '交通 ($1,500)', '餐飲 ($4,000)', '門票與活動 ($2,100)'],
+                datasets: [{
+                    data: [8400, 1500, 4000, 2100],
+                    backgroundColor: ['#4A90E2', '#F5A623', '#7ED321', '#9013FE'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.parsed;
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = Math.round((value / total) * 100) + '%';
+                                return ` ${context.label.split(' ')[0]}: $${value.toLocaleString()} (${percentage})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Food Map Logic (Updated with B&B Owner's List) ---
+        const foodData = [
+            // 簡餐 / 異國 (bistro_thai)
+            { name: '快樂鳥', category: 'bistro_thai', price: '$300-$600', desc: '激推海鮮披薩、烤春雞、水果氣泡飲。份量足裝潢美，親子寵物友善。', query: '恆春 快樂鳥', perk: true, icon: '🍕' },
+            { name: '一杯咖啡', category: 'bistro_thai', price: '合理', desc: '家常菜版的簡餐，五穀飯非常好吃，餐點讚但上餐稍慢可耐心等候。', query: '恆春 一杯咖啡', perk: false, icon: '🍛' },
+            { name: '象廚泰式料理', category: 'bistro_thai', price: '合理', desc: '庭園式好停車。恆春月亮蝦餅最厚的應該是他們，餐點好吃。', query: '恆春 象廚', perk: false, icon: '🐘' },
+            { name: '三輪車泰式料理', category: 'bistro_thai', price: '合理', desc: '餐點好吃價格合理，但較不好停車，首推還是象廚。', query: '恆春 三輪車泰式', perk: false, icon: '🌶️' },
+            { name: '麋谷 Migu village', category: 'bistro_thai', price: '~$250', desc: '舊碾米廠改建的特色餐廳，烤飯糰套餐精緻好吃 (需訂位)。', query: '恆春 麋谷', perk: false, icon: '🍙' },
+
+            // 中式 / 海產 (chinese_seafood)
+            { name: '北門家常菜', category: 'chinese_seafood', price: '實惠', desc: '無菜單標價，依人數給量。首推恆春最好吃豬腳，超級下飯！', query: '恆春 北門家常菜', perk: false, icon: '🥘' },
+            { name: '漁文海產店', category: 'chinese_seafood', price: '合理', desc: '位於紅柴坑，離民宿僅5分鐘車程。海鮮價格合理，兩人也好點菜。', query: '恆春 漁文海產店', perk: false, icon: '🦀' },
+            { name: '山下人家', category: 'chinese_seafood', price: '合理', desc: '餐點好吃出餐快，份量偏多！假日最好事先訂位。', query: '恆春 山下人家', perk: false, icon: '🥢' },
+            { name: '邱家生魚片 (後壁湖)', category: 'chinese_seafood', price: '~$400', desc: '超厚切、高CP值生魚片，Day 2 中午順遊後壁湖的選擇。', query: '後壁湖 邱家生魚片', perk: false, icon: '🐟' },
+
+            // 在地麵食 / 小吃 (local_noodle)
+            { name: '古城擔仔麵', category: 'local_noodle', price: '便宜', desc: '營業17:00-24:00。品項多價格便宜，非常好吃。宵夜好去處！', query: '恆春 古城擔仔麵', perk: true, icon: '🍜' },
+            { name: '恆春大麵', category: 'local_noodle', price: '~$80', desc: '萬里桐唯一有做晚餐的麵店。飯麵水餃都有，份量足，開到19:00。', query: '恆春 萬里桐 恆春大麵', perk: false, icon: '🥟' },
+            { name: '秋香麵店', category: 'local_noodle', price: '~$60', desc: '民宿老闆心中傳統麵店Top 1！在地人日常愛吃，在快樂鳥旁邊。', query: '恆春 秋香麵店', perk: false, icon: '🍜' },
+            { name: '謝家古早味麻醬麵', category: 'local_noodle', price: '~$60', desc: '在地人平常會吃的麵店，麻醬麵超級讚。', query: '恆春 謝家古早味麻醬麵', perk: false, icon: '🍜' },
+            { name: '鄉村冬粉鴨', category: 'local_noodle', price: '~$150', desc: '老字號！滷味都好吃，敢吃的話推薦試試看「豬氣管」。', query: '恆春 鄉村冬粉鴨', perk: false, icon: '🦆' },
+            { name: '鴨香飯', category: 'local_noodle', price: '$85', desc: '首推鴨肉飯+荷包蛋！鴨肉已去骨，好吃份量又足夠。', query: '恆春 鴨香飯', perk: false, icon: '🦆' },
+            
+            // 甜點 / 中途休息站 (dessert)
+            { name: '柯記古早味綠豆饌', category: 'dessert', price: '~$50', desc: '恆春必吃在地甜點，消暑解渴。', query: '恆春 柯記綠豆饌', perk: false, icon: '🥣' },
+            { name: '肥春閣', category: 'dessert', price: '~$150', desc: '老屋改造咖啡廳，躲避下午烈日的好去處。', query: '恆春 肥春閣', perk: false, icon: '☕' }
+        ];
+
+        const foodGrid = document.getElementById('food-grid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Function to render food cards
+        function renderFood(filterType) {
+            foodGrid.innerHTML = ''; 
+            const filteredData = filterType === 'all' ? foodData : foodData.filter(item => item.category === filterType);
+            
+            if (filteredData.length === 0) {
+                foodGrid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">此分類暫無資料。</p>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const perkBadge = item.perk ? `<span class="mt-1 inline-block text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded shadow-sm">🎁 報「海邊走走旅居」有招待</span>` : '';
+                
+                const card = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-stone text-lg leading-tight">${item.icon} ${item.name}</h4>
+                            <span class="text-xs font-bold text-sunset bg-orange-50 px-2 py-1 rounded whitespace-nowrap ml-2">${item.price}</span>
+                        </div>
+                        ${perkBadge}
+                        <p class="text-sm text-gray-600 mt-2 mb-4 flex-grow">${item.desc}</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${item.query}" target="_blank" class="text-center w-full block text-sm text-ocean border border-ocean px-3 py-1.5 rounded hover:bg-ocean hover:text-white transition">
+                            📍 Google 導航
+                        </a>
+                    </div>
+                `;
+                foodGrid.innerHTML += card;
+            });
+        }
+
+        // Add event listeners to filter buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active button styling
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-ocean', 'text-white');
+                    b.classList.add('bg-white', 'text-stone');
+                });
+                e.target.classList.remove('bg-white', 'text-stone');
+                e.target.classList.add('bg-ocean', 'text-white');
+
+                // Render specific category
+                renderFood(e.target.dataset.filter);
+            });
+        });
+
+        // Initial render
+        renderFood('all');
+
+        // --- Aquarium Schedule Logic ---
+        const aquaSchedule = [
+            { time: '13:00', name: '大洋池餵食秀', pavilion: 'blue', pavilionName: '台灣水域館', desc: '潛水員與滿池魚群的壯觀互動', highlight: false },
+            { time: '14:00', name: '海藻森林餵食', pavilion: 'teal', pavilionName: '世界水域館', desc: '高達10公尺的巨型海藻與可愛海豹', highlight: true },
+            { time: '14:30', name: '觸摸池開放', pavilion: 'blue', pavilionName: '台灣水域館', desc: '親手觸摸海星與海參 (需洗手)', highlight: false },
+            { time: '15:00', name: '企鵝餵食秀', pavilion: 'teal', pavilionName: '世界水域館', desc: '超人氣！看企鵝們成群搶魚吃', highlight: true },
+            { time: '15:00', name: '與魚共舞', pavilion: 'pink', pavilionName: '珊瑚王國館', desc: '海底隧道內的潛水員餵食互動', highlight: false },
+            { time: '16:30', name: '大洋池餵食秀', pavilion: 'blue', pavilionName: '台灣水域館', desc: '閉館前的最後一場壯觀餵食', highlight: false }
+        ];
+
+        const aquaList = document.getElementById('aqua-schedule-list');
+        const aquaBtns = document.querySelectorAll('.aqua-btn');
+
+        function renderAqua(filterType) {
+            aquaList.innerHTML = '';
+            const filtered = filterType === 'all' ? aquaSchedule : aquaSchedule.filter(item => item.pavilion === filterType);
+            
+            filtered.forEach(item => {
+                // Determine colors based on pavilion
+                let borderColor = 'border-gray-200';
+                let tagBg = 'bg-gray-100';
+                let tagText = 'text-gray-600';
+                
+                if(item.pavilion === 'pink') { borderColor = 'border-pink-200'; tagBg = 'bg-pink-50'; tagText = 'text-pink-700'; }
+                if(item.pavilion === 'blue') { borderColor = 'border-blue-200'; tagBg = 'bg-blue-50'; tagText = 'text-blue-700'; }
+                if(item.pavilion === 'teal') { borderColor = 'border-teal-200'; tagBg = 'bg-teal-50'; tagText = 'text-teal-700'; }
+
+                const badge = item.highlight ? `<span class="ml-2 text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded animate-pulse">✨ 嚮導推薦必看</span>` : '';
+
+                const html = `
+                    <div class="flex items-center p-3 border-l-4 ${borderColor} bg-white hover:bg-gray-50 transition rounded-r-lg border-y border-r">
+                        <div class="font-bold text-xl text-ocean w-20 flex-shrink-0">${item.time}</div>
+                        <div class="flex-grow">
+                            <div class="flex items-center flex-wrap">
+                                <h4 class="font-bold text-stone text-md">${item.name}</h4>
+                                ${badge}
+                            </div>
+                            <p class="text-sm text-gray-500">${item.desc}</p>
+                        </div>
+                        <div class="hidden sm:block">
+                            <span class="text-xs font-bold ${tagBg} ${tagText} px-2 py-1 rounded">${item.pavilionName}</span>
+                        </div>
+                    </div>
+                `;
+                aquaList.innerHTML += html;
+            });
+        }
+
+        aquaBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                aquaBtns.forEach(b => {
+                    b.classList.remove('bg-ocean', 'text-white');
+                    b.classList.add('bg-gray-100', 'text-stone');
+                });
+                e.target.classList.remove('bg-gray-100', 'text-stone');
+                e.target.classList.add('bg-ocean', 'text-white');
+                renderAqua(e.target.dataset.pavilion);
+            });
+        });
+
+        // Init aquarium schedule
+        renderAqua('all');
+
+    </script>
 </body>
 </html>
