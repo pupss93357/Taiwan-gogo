@@ -66,22 +66,6 @@
 </head>
 <body class="font-sans antialiased leading-relaxed">
 
-    <!-- Chosen Palette: Warm Neutrals (Sand background), Ocean Blue for primary actions, Sunset Orange for highlights, Stone for text. -->
-    <!-- Application Structure Plan: 
-         1. Sticky Navigation: Quick access to sections.
-         2. Hero Section: Basic trip info.
-         3. Overview & Budget (Chart): Detailed budget breakdown and visual doughnut chart.
-         4. Accommodation & Transport: Key info about the B&B and distances to attractions.
-         5. Interactive Timeline (The Core): Daily breakdown with explicit rest stops (Guanmiao), time management (ATV), parking info, and Google Maps links.
-         6. Aquarium Guide: Custom map and filterable schedule to optimize the visit.
-         7. Food Map: Filterable grid based on B&B owner's local recommendations.
-         8. Crisis Management: Quick reference for emergencies. -->
-    <!-- Visualization & Content Choices: 
-         - Doughnut Chart (Chart.js): Budget breakdown -> Goal: Show cost distribution -> Justification: Easy to read proportions -> Library: Chart.js (NO SVG).
-         - Timeline: CSS/HTML structured list -> Goal: Show chronological itinerary -> Justification: Best for sequential travel plans -> Library: Vanilla HTML/Tailwind (NO SVG/Mermaid).
-         - Filterable Grids: For Food options & Aquarium schedule -> Goal: Organize options -> Justification: Allows quick choice -> Library: Vanilla JS (NO SVG). -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
     <!-- Navigation -->
     <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 top-0">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,7 +100,7 @@
     <header class="pt-24 pb-12 bg-gradient-to-b from-[#e0f2fe] to-sand">
         <div class="max-w-5xl mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-extrabold text-stone mb-4">恆春放鬆放空行 🌊</h1>
-            <p class="text-lg text-gray-600 mb-6">出發日期：2025/05/01 - 05/03 ｜ 成員：2位大人</p>
+            <p class="text-lg text-gray-600 mb-6">出發日期：2026/05/01 - 05/03 ｜ 成員：2位大人</p>
             <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm text-sm border border-gray-200">
                 <span>🚗 雲林出發</span> ➡️ <span>🏨 海邊走走旅居</span>
             </div>
@@ -158,21 +142,120 @@
                             
                             <li class="flex justify-between items-center bg-gray-50 p-2 rounded">
                                 <span>🎟️ 門票與活動</span>
-                                <span class="font-bold">~$2,100</span>
+                                <span class="font-bold">~$2,400</span>
                             </li>
-                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">海生館 $450x2 + 沙灘車預估 $1,200/台(兩人共乘)</li>
+                            <li class="text-xs text-gray-500 text-right -mt-2 mb-2">海生館 $450x2 + 鹿野仙競沙灘車 $1,500/台(兩人共乘)</li>
                         </ul>
                         <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center text-lg">
                             <span class="font-bold text-ocean">總計預估</span>
-                            <span class="font-bold text-danger">~$16,000</span>
+                            <span class="font-bold text-danger">~$16,300</span>
                         </div>
-                        <div class="text-sm text-red-500 text-right mt-1 font-bold">註：扣除已付住宿，這趟旅程您大約需準備 ~$11,800 的現金/信用卡預算。</div>
+                        <div class="text-sm text-red-500 text-right mt-1 font-bold">註：扣除已付住宿，這趟旅程您大約需準備 ~$12,100 的現金/信用卡預算。</div>
                     </div>
                     <!-- Chart container for budget -->
                     <div class="chart-container">
                         <canvas id="budgetChart"></canvas>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Section 1.2: Packing List -->
+        <section id="packing" class="scroll-mt-20">
+            <div class="flex justify-between items-end border-b-2 border-ocean pb-2 mb-6">
+                <h2 class="text-2xl font-bold inline-block">🎒 行前打包清單</h2>
+            </div>
+            <p class="mb-6 text-gray-700 leading-relaxed">
+                點擊項目即可打勾確認！已特別為您規劃了**沙灘車專用衣物**以及**隨興玩水裝備**，出發前一晚別忘了再次確認。
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Category 1: 重要與電子 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-stone mb-3 flex items-center gap-2"><span class="text-xl">📁</span> 重要證件與電子</h3>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">身分證、健保卡 (住宿登記與備用)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">汽車駕照 (開車必備)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">足夠的現金 (民宿尾款 $4200 + 沙灘車 $1500)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">手機充電線 & 行動電源</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">車用充電器 / 手機車架</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Category 2: 海灘與防曬 -->
+                <div class="bg-blue-50 p-5 rounded-xl shadow-sm border border-blue-100">
+                    <h3 class="font-bold text-ocean mb-3 flex items-center gap-2"><span class="text-xl">🏖️</span> 玩水與防曬裝備</h3>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition font-bold">太陽眼鏡 (開車與沙灘車防沙必備！)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">防曬乳 (強烈建議海洋友善款式)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">泳衣 / 泳褲 (隨時準備下海)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">海灘拖鞋 / 涼鞋</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">防水塑膠袋 2-3 個 (裝濕衣物與沙灘車髒衣服)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Category 3: 衣物與盥洗 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-stone mb-3 flex items-center gap-2"><span class="text-xl">👕</span> 衣物與盥洗用品</h3>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">日常換洗衣物 x 3套 + 睡衣</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition font-bold text-sunset">不怕髒的衣褲 x 1套 (玩沙灘車專用)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">薄外套 (海生館內冷氣與晚上防風)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">牙刷、牙膏 (環保趨勢，建議自備)</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">卸妝品、保養品、隱形眼鏡與藥水</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer group">
+                            <input type="checkbox" class="mt-1 peer w-4 h-4 text-ocean rounded focus:ring-ocean accent-ocean">
+                            <span class="peer-checked:line-through peer-checked:text-gray-400 transition">常備藥物 (腸胃藥、止痛藥、蘆薈曬後鎮定)</span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -227,13 +310,40 @@
                             <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 15-20 分鐘</span>
                         </div>
                         <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
-                            <span class="font-bold text-stone">🏎️ 沙灘車活動區 (南灣/恆春)</span>
+                            <span class="font-bold text-stone">🏎️ 鹿野仙競沙灘車</span>
                             <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 15-20 分鐘</span>
                         </div>
                         <div class="flex justify-between items-center bg-white p-3 rounded border border-gray-100 hover:shadow-sm transition">
                             <span class="font-bold text-stone">🌭 墾丁大街夜市</span>
                             <span class="text-ocean font-bold bg-blue-50 px-2 py-1 rounded text-sm">約 20-25 分鐘</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增：民宿周邊散步景點 -->
+            <div class="mt-6 bg-blue-50 border border-blue-100 p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-bold text-ocean mb-4 border-b border-blue-200 pb-2">🚶‍♂️ 萬里桐周邊散步/極短車程景點</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-stone mb-1">🌊 萬里桐海灘</h4>
+                        <p class="text-xs text-gray-600 mb-2">步行 1-2 分鐘</p>
+                        <p class="text-sm text-gray-700">就在民宿正前方！有豐富的潮間帶可以看海星、寄居蟹，也是超級絕美的看夕陽秘境。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-stone mb-1">⛵ 山海漁港</h4>
+                        <p class="text-xs text-gray-600 mb-2">開車 3 分鐘</p>
+                        <p class="text-sm text-gray-700">電影《海角七號》阿嘉看海的地方。非常寧靜、幾乎沒有觀光客的純樸隱藏版小漁村。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-stone mb-1">🚢 紅柴坑漁港</h4>
+                        <p class="text-xs text-gray-600 mb-2">開車 5 分鐘</p>
+                        <p class="text-sm text-gray-700">可在此搭乘「小海豚半潛艇」免下水就能看海底珊瑚礁。老闆推薦的漁文海產也在這。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-stone mb-1">🌅 關山觀景台</h4>
+                        <p class="text-xs text-gray-600 mb-2">開車 10 分鐘</p>
+                        <p class="text-sm text-gray-700">曾被CNN評選為世界百大絕美落日！若不想在海邊，可以選擇來此居高臨下欣賞日落。</p>
                     </div>
                 </div>
             </div>
@@ -245,7 +355,7 @@
             
             <!-- Day 1 -->
             <div class="mb-12">
-                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 1：5/1 (四) 啟程與海洋巡禮</h3>
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 1：5/1 (五) 啟程與海洋巡禮</h3>
                 <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
                     
                     <div class="timeline-item relative">
@@ -288,69 +398,81 @@
 
                     <div class="timeline-item relative">
                         <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">18:00</span>
-                        <h4 class="text-lg font-bold mt-2">晚餐：恆春大快朵頤</h4>
-                        <p class="text-gray-600 text-sm mt-1">首推老闆私藏的「北門家常菜」，必點超級下飯的恆春最好吃豬腳！若是想吃麵食宵夜類，推薦「古城擔仔麵」<span class="bg-red-100 text-red-600 px-1 rounded text-xs font-bold">🎁 報海邊走走送小菜</span>，便宜又好吃。</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：北門家常菜附近路邊可臨停；古城擔仔麵建議停<a href="https://www.google.com/maps/search/?api=1&query=恆春鎮公有停車場" target="_blank" class="text-ocean hover:underline">恆春鎮公有停車場</a>。</p>
+                        <h4 class="text-lg font-bold mt-2">晚餐：北門家常菜 🥘</h4>
+                        <p class="text-gray-600 text-sm mt-1">今晚鎖定老闆私藏的「北門家常菜」，這間是在地人激推的好店！沒有菜單標價，依人數給量，必點超級下飯的【恆春最好吃豬腳】！</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：餐廳周邊路邊白線可臨停，或停放北門周邊停車場。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=恆春北門家常菜" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
                     </div>
                 </div>
             </div>
 
             <!-- Day 2 -->
             <div class="mb-12">
-                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 2：5/2 (五) 自然探索與越野刺激</h3>
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 2：5/2 (六) 越野刺激與自然探索</h3>
                 <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
                     
                     <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">09:00</span>
-                        <h4 class="text-lg font-bold mt-2">起床與慵懶早餐</h4>
-                        <p class="text-gray-600 text-sm mt-1">睡到自然醒。可享用民宿早餐或至鎮上吃在地早餐。</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：若前往鎮上，一樣建議停放恆春鎮公有停車場。</p>
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">07:15</span>
+                        <h4 class="text-lg font-bold mt-2">早起出發準備</h4>
+                        <p class="text-gray-600 text-sm mt-1">因為預約了早上的活動，今天需稍微早起。換上不怕髒的衣物，帶上太陽眼鏡，準備出發！</p>
                     </div>
 
                     <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">10:30 (停留 1.5hr)</span>
-                        <h4 class="text-lg font-bold mt-2">晨間散步：星砂灣 / 後壁湖漁港</h4>
-                        <p class="text-gray-600 text-sm mt-1">🚶‍♂️ 趁早上陽光還沒那麼毒辣，去星砂灣拍拍照、走走燈塔旁的小徑，享受自然海景。</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=後壁湖遊艇碼頭停車場" target="_blank" class="text-ocean hover:underline">後壁湖遊艇碼頭周邊免費停車場</a>，再步行前往星砂灣。</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=墾丁星砂灣" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
-                    </div>
-
-                    <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:30 (停留 1.5hr)</span>
-                        <h4 class="text-lg font-bold mt-2">午餐：紅柴坑漁文海產</h4>
-                        <p class="text-gray-600 text-sm mt-1">🦀 捨棄觀光客眾多的後壁湖，改去離民宿只要5分鐘車程的「漁文海產店」。海鮮價格合理，兩個人也非常好點菜，老闆真心推薦！</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：餐廳附設停車位或<a href="https://www.google.com/maps/search/?api=1&query=紅柴坑漁港" target="_blank" class="text-ocean hover:underline">紅柴坑漁港</a>周邊臨停。</p>
-                    </div>
-
-                    <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-sunset bg-orange-100 px-2 py-1 rounded">14:30 (停留 1.5hr)</span>
-                        <h4 class="text-lg font-bold mt-2">午休或咖啡廳避暑</h4>
-                        <p class="text-gray-600 text-sm mt-1">💡 5月午後氣溫極高，不建議此時戶外活動。可回民宿休息，或去「肥春閣」喝杯飲料吹冷氣。</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：若是去獨立咖啡廳，通常備有小型停車場或可白線臨停。</p>
-                    </div>
-
-                    <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">16:30 (活動 1-1.5hr)</span>
-                        <h4 class="text-lg font-bold mt-2">重點活動：沙灘車越野體驗 🏎️</h4>
-                        <div class="bg-blue-50 border border-blue-200 p-3 rounded mt-2 text-sm text-gray-700">
-                            <strong>天氣與時間判斷：</strong> 5月份下午4點半後陽光較柔和，且有機會在沙灘或高處看夕陽，是最適合玩沙灘車的時間。請穿著不怕髒的衣物，並戴上太陽眼鏡防沙。若當日遇到雷陣雨，請依據<a href="#crisis" class="text-danger underline">危機處理</a>聯絡店家改期。
+                        <span class="text-sm font-bold text-sunset bg-orange-100 px-2 py-1 rounded animate-pulse">08:00 (活動 60min)</span>
+                        <h4 class="text-lg font-bold mt-2">重點活動：鹿野仙競沙灘車 🏎️</h4>
+                        <div class="bg-orange-50 border border-orange-200 p-3 rounded mt-2 text-sm text-gray-800">
+                            <strong>🎯 已預約確認！</strong> 早上 8:00 報到。此時陽光溫和不刺眼，是玩沙灘車的絕佳時機！兩人共乘一台車 ($1,500)，盡情享受 60 分鐘的越野快感與專業教練拍照。
                         </div>
-                        <p class="text-xs text-gray-500 mt-2 font-bold">🅿️ 停車建議：請直接將車輛停放在預約的「沙灘車業者」所提供的專屬停車場或集合點腹地。</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=墾丁沙灘車" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 搜尋周邊沙灘車</a>
+                        <p class="text-xs text-gray-500 mt-2 font-bold">🅿️ 停車建議：請直接導航至報到處，有提供專屬腹地停車。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=鹿野仙競沙灘車" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
                     </div>
 
                     <div class="timeline-item relative">
-                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">19:00</span>
-                        <h4 class="text-lg font-bold mt-2">晚餐：泰式庭園或在地老店</h4>
-                        <p class="text-gray-600 text-sm mt-1">玩完沙灘車肚子一定餓了！推薦去「象廚泰式料理」吃全恆春最厚的月亮蝦餅，好停車又美味。若想吃點小吃，老字號「鄉村冬粉鴨」的滷味(推豬氣管)也是絕佳選擇。</p>
-                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：象廚有廣大專屬停車場；吃冬粉鴨請停<a href="https://www.google.com/maps/search/?api=1&query=恆春鎮公有停車場" target="_blank" class="text-ocean hover:underline">恆春鎮公有停車場</a>。</p>
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">09:30</span>
+                        <h4 class="text-lg font-bold mt-2">盥洗與遲來的早餐</h4>
+                        <p class="text-gray-600 text-sm mt-1">玩完沙灘車後，先驅車回民宿稍微沖洗身上的沙子換個衣服。可吃點民宿準備的簡單早餐或到附近買杯咖啡墊墊胃。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">10:30 (停留 1hr)</span>
+                        <h4 class="text-lg font-bold mt-2">晨間散步：星砂灣</h4>
+                        <p class="text-gray-600 text-sm mt-1">🚶‍♂️ 換上乾淨衣服後，去星砂灣拍拍照、走走燈塔旁的小徑，享受自然海景。</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：<a href="https://www.google.com/maps/search/?api=1&query=後壁湖遊艇碼頭停車場" target="_blank" class="text-ocean hover:underline">後壁湖遊艇碼頭周邊免費停車場</a>，再步行前往星砂灣。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">12:00 (停留 1.5hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午餐：漁文海產店 🦀</h4>
+                        <p class="text-gray-600 text-sm mt-1">捨棄觀光客眾多的後壁湖，直奔位於紅柴坑的「漁文海產店」（離民宿超近）。海鮮價格合理，兩個人也非常好點菜，老闆真心推薦！</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：餐廳附設停車位或<a href="https://www.google.com/maps/search/?api=1&query=紅柴坑漁港" target="_blank" class="text-ocean hover:underline">紅柴坑漁港</a>周邊臨停。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=恆春漁文海產店" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">14:00 (停留 2hr)</span>
+                        <h4 class="text-lg font-bold mt-2">午後避暑：咖啡廳或民宿放空</h4>
+                        <p class="text-gray-600 text-sm mt-1">💡 午後氣溫極高，且早上已消耗體力。建議回民宿睡個午覺，或去「肥春閣」喝杯飲料吹冷氣。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">16:30</span>
+                        <h4 class="text-lg font-bold mt-2">夕陽秘境：萬里桐看海</h4>
+                        <p class="text-gray-600 text-sm mt-1">既然早上已經把沙灘車玩掉了，下午最適合直接從民宿步行 1 分鐘到萬里桐海灘，坐在潮間帶旁欣賞絕美的屏東夕陽。</p>
+                    </div>
+
+                    <div class="timeline-item relative">
+                        <span class="text-sm font-bold text-ocean bg-blue-100 px-2 py-1 rounded">18:00</span>
+                        <h4 class="text-lg font-bold mt-2">晚餐：象廚泰式料理 🐘</h4>
+                        <p class="text-gray-600 text-sm mt-1">晚餐安排到庭園式的「象廚泰式料理」。不僅好停車，重點是能吃到全恆春「最厚」的月亮蝦餅，美味又滿足！</p>
+                        <p class="text-xs text-gray-500 mt-1">🅿️ 停車建議：餐廳有廣大的專屬停車場，非常方便。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=恆春象廚" target="_blank" class="text-ocean text-sm mt-2 inline-block hover:underline">🔗 開啟 Google Maps</a>
                     </div>
                 </div>
             </div>
 
             <!-- Day 3 -->
             <div class="mb-12">
-                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 3：5/3 (六) 賦歸與藝文散策</h3>
+                <h3 class="text-xl font-bold text-ocean bg-blue-50 py-2 px-4 rounded-lg inline-block mb-6">Day 3：5/3 (日) 賦歸與藝文散策</h3>
                 <div class="border-l-2 border-ocean/30 pl-6 ml-2 space-y-8 relative">
                     
                     <div class="timeline-item relative">
@@ -514,7 +636,7 @@
                     <h3 class="font-bold text-lg mb-2 text-stone">狀況二：天候不佳 (豪大雨/颱風警報)</h3>
                     <ul class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
                         <li><strong>第一步聯絡：</strong> 
-                            1. 聯絡「沙灘車業者」確認是否取消或改期。<br>
+                            1. 聯絡「鹿野仙競沙灘車」確認是否取消或改期。<br>
                             2. 聯絡「海邊走走旅居」確認是否可延期 (若發布陸警)。
                         </li>
                         <li><strong>保留證據：</strong> 截圖中央氣象署的警報畫面，作為退費或延期交涉的依據。</li>
@@ -559,9 +681,9 @@
         new Chart(budgetCtx, {
             type: 'doughnut',
             data: {
-                labels: ['住宿 ($8,400)', '交通 ($1,500)', '餐飲 ($4,000)', '門票與活動 ($2,100)'],
+                labels: ['住宿 ($8,400)', '交通 ($1,500)', '餐飲 ($4,000)', '門票與活動 ($2,400)'],
                 datasets: [{
-                    data: [8400, 1500, 4000, 2100],
+                    data: [8400, 1500, 4000, 2400],
                     backgroundColor: ['#4A90E2', '#F5A623', '#7ED321', '#9013FE'],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -599,7 +721,7 @@
             { name: '北門家常菜', category: 'chinese_seafood', price: '實惠', desc: '無菜單標價，依人數給量。首推恆春最好吃豬腳，超級下飯！', query: '恆春 北門家常菜', perk: false, icon: '🥘' },
             { name: '漁文海產店', category: 'chinese_seafood', price: '合理', desc: '位於紅柴坑，離民宿僅5分鐘車程。海鮮價格合理，兩人也好點菜。', query: '恆春 漁文海產店', perk: false, icon: '🦀' },
             { name: '山下人家', category: 'chinese_seafood', price: '合理', desc: '餐點好吃出餐快，份量偏多！假日最好事先訂位。', query: '恆春 山下人家', perk: false, icon: '🥢' },
-            { name: '邱家生魚片 (後壁湖)', category: 'chinese_seafood', price: '~$400', desc: '超厚切、高CP值生魚片，Day 2 中午順遊後壁湖的選擇。', query: '後壁湖 邱家生魚片', perk: false, icon: '🐟' },
+            { name: '邱家生魚片 (後壁湖)', category: 'chinese_seafood', price: '~$400', desc: '超厚切、高CP值生魚片，順遊後壁湖時的選擇。', query: '後壁湖 邱家生魚片', perk: false, icon: '🐟' },
 
             // 在地麵食 / 小吃 (local_noodle)
             { name: '古城擔仔麵', category: 'local_noodle', price: '便宜', desc: '營業17:00-24:00。品項多價格便宜，非常好吃。宵夜好去處！', query: '恆春 古城擔仔麵', perk: true, icon: '🍜' },
